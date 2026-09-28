@@ -13,7 +13,7 @@ const validate = require("../helpers/dataValidation");
 const getAllEmployees = async (req, res) => {
   try {
     // Creating array with results
-    const { rows } = await db.query(q.qSelectActiveEmployees);
+    const { rows } = await db.query(q.qSelectEmployees);
 
     res.json(rows);
   } catch (err) {
@@ -30,7 +30,7 @@ const getEmployeeByID = async (req, res) => {
   // Finding employee
   try {
     // Searching for employee
-    const { rows } = await db.query(q.qSelectEmployeeById, [id]);
+    const { rows } = await db.query(q.qSelectEmployeeFullById, [id]);
     const employee = rows[0];
 
     // Send error message if employee isn't found

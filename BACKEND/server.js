@@ -49,6 +49,10 @@ app.use("/logout", require("./routes/logout"));
 
 // Handling users functions
 app.use("/users", require("./routes/api/users"));
+app.use("/employees", require("./routes/api/employees"));
+app.use("/roles", require("./routes/api/roles"));
+app.use("/permissions", require("./routes/api/permissions"));
+
 // Handling user data refresh functions
 // app.use("/re", require("./routes/refreshUser"));
 
