@@ -8,10 +8,11 @@
 // Permissions however are fixed
 
 // The assigned numbers are random
-const ROLES_LIST = {
-  Admin: 9999,
-  Editor: 8888,
-  Employee: 1111,
+const PERMISSIONS_LIST = {
+  USER: 1928,
+  ROLE: 8127,
+  EMPLOYEE: 7654,
+  EQUIPMENT: 1997,
 };
 
-module.exports = ROLES_LIST;
+module.exports = PERMISSIONS_LIST;

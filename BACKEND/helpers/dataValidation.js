@@ -2,7 +2,7 @@
 const { modules: regex } = require("./regex");
 
 // Importing user roles
-const ROLES_LIST = require("../config/userRolesList");
+const PERMISSIONS_LIST = require("../config/rolesPermissionsList");
 
 // Function to validate emails
 const validateEmail = (email) => {

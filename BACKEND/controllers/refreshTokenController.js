@@ -1,6 +1,6 @@
 // Controller file to manage Refresh Tokens
 
-// IMporting Database connection
+// Importing Database connection
 const db = require("../db");
 
 // Importing queries
