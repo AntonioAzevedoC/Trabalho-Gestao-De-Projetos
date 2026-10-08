@@ -112,7 +112,7 @@ const updateEmployee = async (req, res) => {
       login_main_system,
       id_sector,
       id_shift,
-      req.user.id,
+      18,
       Number(id),
     ]);
 
@@ -133,10 +133,12 @@ const updateEmployee = async (req, res) => {
 const deactivateEmployee = async (req, res) => {
   // ID for employee being deactivated (Made deactive, for foreign table's purpouse)
   const id = req.params.id;
+  // ID for user making the call
+  const id_user = req.params.id_user;
 
   try {
     // Deactivating employee
-    await db.query(q.qDeactivateEmployee, [Number(id)]);
+    await db.query(q.qDeactivateEmployee, [Number(id_user), Number(id)]);
 
     res.status(201).json({ message: "Funcionário desativado" });
   } catch (err) {
