@@ -76,6 +76,12 @@ export const queries = {
   // Query to select all permissions connected to a specific role
   SelectPermissionsByRole: `SELECT p.id, p.name FROM permission p INNER JOIN role_permission rp ON p.id = rp.id_permission WHERE rp.id_role = $1 ORDER BY p.name ASC;`,
 
+  // Query to select a role by its name
+  qSelectRoleByName: `SELECT id, name FROM role WHERE LOWER(name) = LOWER($1);`,
+
+  // Find users assigned to a role
+  qSelectUsersByRole: `SELECT id FROM "user" WHERE id_role = $1;`,
+
   //
   //
   // INSERTS
@@ -91,7 +97,7 @@ export const queries = {
   qAddEmployee: `INSERT INTO employee (name, id_position, code_employee, login_main_system, id_sector, id_shift, status_active, date_register, id_user_create, id_last_user_change) VALUES ($1, $2, $3, $4, $5, $6, true, CURRENT_TIMESTAMP, $7, $7) RETURNING *;`,
 
   // Create a new role
-  qInsertRole: `INSERT INTO role (name) VALUES ($1) RETURNING id, name;`,
+  qAddRole: `INSERT INTO role (name) VALUES ($1) RETURNING id, name;`,
 
   // Add permission to role
   qAddRolePermission: `INSERT INTO role_permission (id_role, id_permission) VALUES ($1, $2);`,
@@ -140,8 +146,8 @@ export const queries = {
   // Query to delete employee by ID
   qDeleteEmployee: `DELETE FROM employee WHERE id = $1 RETURNING *;`,
 
-  // Delete a role only if it has no associated permissions
-  qDeleteRole: `DELETE FROM role WHERE id = $1 AND NOT EXISTS (SELECT 1 FROM role_permission rp WHERE rp.id_role = $1) RETURNING id, name;`,
+  // Delete a role only if a user doesn't have it
+  qDeleteRole: `DELETE FROM role WHERE id = $1 AND NOT EXISTS (SELECT 1 FROM "user" u WHERE u.id_role = $1) RETURNING id, name;`,
 
   // Remove a permission from a role
   qDeleteRolePermission: `DELETE FROM role_permission WHERE id_role = $1 AND id_permission = $2 RETURNING id_role, id_permission;`,

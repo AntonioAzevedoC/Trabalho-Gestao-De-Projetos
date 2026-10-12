@@ -47,6 +47,47 @@ const getRoleByID = async (req, res) => {
   }
 };
 
+// Function to create role
+const addRole = async (req, res) => {
+  // Receiving role data
+  let { name } = req.body;
+
+  // Validating data
+  if (!validate.validateName(name)) {
+    return res.status(400).json({
+      message: `Dados inválidos`,
+    });
+  }
+
+  try {
+    // Checking whether the role already exists
+    const { rows: existingRoles } = await db.query(q.qSelectRoleByName, [
+      name.trim().toLowerCase(),
+    ]);
+
+    if (existingRoles.length > 0) {
+      return res.status(409).json({
+        message: `Papel já cadastrado`,
+      });
+    }
+
+    // Inserting new role
+    const { rows } = await db.query(q.qAddRole, [name.trim().toLowerCase()]);
+
+    // Sending successful status
+    return res.status(201).json({
+      message: "Papel cadastrado com sucesso",
+      role: rows[0],
+    });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      message: "Erro ao cadastrar papel.",
+    });
+  }
+};
+
 // Function to update role
 const updateRole = async (req, res) => {
   // Finding role
@@ -93,15 +134,58 @@ const deleteRole = async (req, res) => {
   // ID for role being deleted
   const id = req.params.id;
 
-  try {
-    // Deleting role
-    await db.query(q.qDeleteRole, [id]);
+  // Validating data
+  if (!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+    return res.status(400).json({
+      message: "ID de papel inválido.",
+    });
+  }
 
-    // Return message for sucesseful deletion
-    res.status(201).json({ message: "Papel deletado." });
+  try {
+    // Finding role
+    const { rows: roleRows } = await db.query(q.qSelectRoleById, [Number(id)]);
+
+    // If role doesn't exist, return error
+    if (!roleRows[0]) {
+      return res.status(404).json({
+        message: "Papel não encontrado.",
+      });
+    }
+
+    // Checking whether the role is assigned to any user
+    const { rows: userRows } = await db.query(q.qSelectUsersByRole, [
+      Number(id),
+    ]);
+
+    if (userRows.length > 0) {
+      return res.status(409).json({
+        message:
+          "Não é possível excluir este papel, pois existem usuários associados a ele.",
+      });
+    }
+
+    // Removing role-permission associations
+    await db.query(q.qDeleteAllRolePermissions, [Number(id)]);
+
+    // Deleting role
+    const { rows: deletedRows } = await db.query(q.qDeleteRole, [Number(id)]);
+
+    if (deletedRows.length === 0) {
+      return res.status(409).json({
+        message: "Não foi possível excluir o papel.",
+      });
+    }
+
+    // Sending successful status
+    return res.status(200).json({
+      message: "Papel excluído com sucesso.",
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Erro ao deletar papel." });
+
+    return res.status(500).json({
+      message: "Erro ao excluir papel.",
+    });
   }
 };
 
@@ -109,6 +193,7 @@ const deleteRole = async (req, res) => {
 module.exports = {
   getAllRoles,
   getRoleByID,
+  addRole,
   updateRole,
   deleteRole,
 };

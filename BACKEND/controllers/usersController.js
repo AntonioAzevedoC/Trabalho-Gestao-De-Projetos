@@ -25,12 +25,12 @@ const getAllUsers = async (req, res) => {
 // Function to get a user data by their ID
 const getUserByID = async (req, res) => {
   // ID for user being searched for
-  const id_usuario = req.params.id;
+  const id = req.params.id;
 
   // Finding user
   try {
     // Searching for user
-    const { rows } = await db.query(q.qSelectUserByID, [id_usuario]);
+    const { rows } = await db.query(q.qSelectUserByID, [id]);
     const user = rows[0];
 
     // Send error message if user isn't found
@@ -74,13 +74,13 @@ const searchForUsers = async (req, res) => {
 // Function to update user
 const updateUser = async (req, res) => {
   // Finding user
-  let { id_usuario, nome_usuario, email_usuario, id_funcao } = req.body;
+  let { id, name, email, id_role } = req.body;
 
   // Validating data
   if (
-    !validate.validateName(nome_usuario) ||
-    !validate.validateEmail(email_usuario) ||
-    !validate.validateRole(id_funcao)
+    !validate.validateName(name) ||
+    !validate.validateEmail(email) ||
+    !validate.validateRole(id_role)
   )
     return res.status(400).json({
       message: `Dados inválidos`,
@@ -88,7 +88,7 @@ const updateUser = async (req, res) => {
 
   try {
     // Finding user to guarantee it isn't an admin user (Those should not be chageable)
-    const { rows } = await db.query(q.qSelectUserByID, [Number(id_usuario)]);
+    const { rows } = await db.query(q.qSelectUserByID, [Number(id)]);
     const currentUserdata = rows[0];
 
     // If user doesn't exist, return error
@@ -100,10 +100,10 @@ const updateUser = async (req, res) => {
 
     // Updating employee data
     await db.query(q.qUpdateUser, [
-      nome_usuario.toLowerCase(),
-      email_usuario.toLowerCase(),
-      id_funcao,
-      id_usuario,
+      name.toLowerCase(),
+      email.toLowerCase(),
+      id_role,
+      id,
     ]);
 
     // Seding successful status
@@ -117,11 +117,11 @@ const updateUser = async (req, res) => {
 // Function to deactivate user
 const deactivateUser = async (req, res) => {
   // ID for user being deleted (Made deactive, for foreign table's purpouse)
-  const id_usuario = req.params.id;
+  const id = req.params.id;
 
   try {
     // Deactivating user
-    await db.query(q.qDeactivateUser, [Number(id_usuario)]);
+    await db.query(q.qDeactivateUser, [Number(id)]);
 
     res.status(201).json({ message: "Usuário desativado" });
   } catch (err) {
@@ -133,11 +133,11 @@ const deactivateUser = async (req, res) => {
 // Function to delete user from database
 const deleteUser = async (req, res) => {
   // ID for user being deleted
-  const id_usuario = req.params.id;
+  const id = req.params.id;
 
   try {
     // Deleting user
-    await db.query(q.qDeleteUser, [id_usuario]);
+    await db.query(q.qDeleteUser, [id]);
 
     // Return message for sucesseful deletion
     res.status(201).json({ message: "Usuário deletado." });

@@ -22,7 +22,7 @@ const getAllPermissions = async (req, res) => {
 // Function to get all permissions related to a role
 const getPermissionsByRoleID = async (req, res) => {
   // ID for permission being searched for
-  const id_role = req.params.id;
+  const id_role = req.params.id_role;
 
   // Finding permissions
   try {
@@ -36,7 +36,7 @@ const getPermissionsByRoleID = async (req, res) => {
 };
 
 // Function to add permission to role
-const addPermissionFromRole = async (req, res) => {
+const addPermissionToRole = async (req, res) => {
   // IDs for connection being created
   const id_role = req.params.id_role;
   const id_permission = req.params.id_permission;
@@ -63,10 +63,10 @@ const deletePermissionFromRole = async (req, res) => {
     await db.query(q.qDeleteRolePermission, [id_role, id_permission]);
 
     // Return message for sucesseful deletion
-    res.status(201).json({ message: "Usuário deletado." });
+    res.status(201).json({ message: "Permissão removida." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Erro ao deletar usuário." });
+    res.status(500).json({ message: "Erro ao remover permissão." });
   }
 };
 
@@ -74,6 +74,6 @@ const deletePermissionFromRole = async (req, res) => {
 module.exports = {
   getAllPermissions,
   getPermissionsByRoleID,
-  addPermissionFromRole,
+  addPermissionToRole,
   deletePermissionFromRole,
 };
