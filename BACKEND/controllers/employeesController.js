@@ -47,29 +47,67 @@ const getEmployeeByID = async (req, res) => {
   }
 };
 
-// Function to search for employee
-// const searchForEmployees = async (req, res) => {
-//   const searchText = req.params.searchText;
+// FUnction to add new employees
+const addEmployee = async (req, res) => {
+  // Receiving employee data
+  let {
+    name,
+    id_position,
+    code_employee,
+    login_main_system,
+    id_sector,
+    id_shift,
+  } = req.body;
 
-//   // Validating employee text request
-//   if (!validate.validateDescription(searchText)) {
-//     return res.status(400).json({
-//       message: `Dados inválidos`,
-//     });
-//   }
+  // Getting the ID of the authenticated user
+  const id_user_create = req.id;
 
-//   // Searching for employees that match agains't the text
-//   try {
-//     const { rows } = await db.query(q.see, [
-//       searchText.toLowerCase(),
-//     ]);
+  // Validating data
+  if (
+    !validate.validateName(name) ||
+    !Number.isInteger(Number(id_position)) ||
+    Number(id_position) <= 0 ||
+    !Number.isInteger(Number(id_shift)) ||
+    Number(id_shift) <= 0 ||
+    !Number.isInteger(id_user_create)
+  ) {
+    return res.status(400).json({
+      message: "Dados inválidos",
+    });
+  }
 
-//     res.json(rows);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Erro ao buscar funcionários." });
-//   }
-// };
+  try {
+    // Registering employee
+    const { rows } = await db.query(q.qAddEmployee, [
+      name,
+      Number(id_position),
+      code_employee,
+      login_main_system,
+      id_sector === null ? null : Number(id_sector),
+      Number(id_shift),
+      id_user_create,
+    ]);
+
+    // Sending successful status
+    return res.status(201).json({
+      message: "Funcionário cadastrado com sucesso",
+      employee: rows[0],
+    });
+  } catch (err) {
+    console.error(err);
+
+    // Handling invalid foreign-key references
+    if (err.code === "23503") {
+      return res.status(400).json({
+        message: "Cargo, setor, turno ou usuário responsável não encontrado.",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Erro ao cadastrar funcionário.",
+    });
+  }
+};
 
 // Function to update employee
 const updateEmployee = async (req, res) => {
@@ -168,7 +206,7 @@ const deleteEmployee = async (req, res) => {
 module.exports = {
   getAllEmployees,
   getEmployeeByID,
-  //   searchForEmployees,
+  addEmployee,
   updateEmployee,
   deactivateEmployee,
   deleteEmployee,

@@ -7,22 +7,15 @@ const PERMISSIONS_LIST = require("../../config/rolesPermissionsList");
 // Verifying the access token before using the command
 router
   .route("/")
-  // .get(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.getAllUsers) // Route to get all users from the database
-  .get(employeesController.getAllEmployees) // Route to get all users from the database
-  // .put(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.updateUser); // Route to update user from database
-  .put(employeesController.updateEmployee); // Route to update user from database
+  .get(employeesController.getAllEmployees) // Route to get all employees from the database
+  .post(employeesController.addEmployee) // Route to add new employee
+  .put(employeesController.updateEmployee); // Route to update employee from database
 
 router
   .route("/:id")
-  // .get(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.getUserByID) // Route to get a specific user from the database
-  .get(employeesController.getEmployeeByID) // Route to get a specific user from the database
-  // .put(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.deactivateUser) // Route to deactivate user from database
-  .delete(employeesController.deleteEmployee); // Route to delete user from database
+  .get(employeesController.getEmployeeByID) // Route to get a specific employee from the database
+  .delete(employeesController.deleteEmployee); // Route to delete employee from database
 
-router.route("/:id/:id_user").put(employeesController.deactivateEmployee); // Route to deactivate user from database
-
-// .delete(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.deleteUser); // Route to delete user from database;
-// router.route("/search/:searchText").get(employeesController.searchForUsers); // Route to search for users in the database;
-// .get(verifyRoles([PERMISSIONS_LIST.Admin]), employeesController.searchForUsers); // Route to search for users in the database;
+router.route("/:id/:id_employee").put(employeesController.deactivateEmployee); // Route to deactivate employee from database
 
 module.exports = router;

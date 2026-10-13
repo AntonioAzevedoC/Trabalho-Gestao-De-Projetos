@@ -47,30 +47,6 @@ const getUserByID = async (req, res) => {
   }
 };
 
-// Function to search for user
-const searchForUsers = async (req, res) => {
-  const searchText = req.params.searchText;
-
-  // Validating user text request
-  if (!validate.validateDescription(searchText)) {
-    return res.status(400).json({
-      message: `Dados inválidos`,
-    });
-  }
-
-  // Searching for users that match agains't the text
-  try {
-    const { rows } = await db.query(q.qSelectUsersFullTextSearch, [
-      searchText.toLowerCase(),
-    ]);
-
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erro ao buscar usuários." });
-  }
-};
-
 // Function to update user
 const updateUser = async (req, res) => {
   // Finding user
@@ -151,7 +127,6 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserByID,
-  searchForUsers,
   updateUser,
   deactivateUser,
   deleteUser,

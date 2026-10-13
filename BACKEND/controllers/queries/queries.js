@@ -82,6 +82,30 @@ export const queries = {
   // Find users assigned to a role
   qSelectUsersByRole: `SELECT id FROM "user" WHERE id_role = $1;`,
 
+  // Query to check whether another equipment record uses the heritage code
+  qCheckDuplicateHeritageCode: `SELECT id FROM equipment WHERE heritage_code = $1 AND id <> $2;`,
+
+  // Query to list all equipment
+  qSelectAllEquipment: `SELECT e.id, e.name, e.id_equipment_type, et.name AS equipment_type, e.id_equipment_status, es.name AS equipment_status, e.heritage_code, e.id_sector, s.name AS sector_name, e.observation, e.date_register, e.date_change_status, e.id_user_create, e.id_last_user_change FROM equipment e INNER JOIN equipment_type et ON e.id_equipment_type = et.id INNER JOIN equipment_status es ON e.id_equipment_status = es.id LEFT JOIN sector s ON e.id_sector = s.id ORDER BY e.name ASC;`,
+
+  // Query to validate equipment type
+  qSelectEquipmentTypeById: `SELECT id FROM equipment_type WHERE id = $1;`,
+
+  // Query to validate equipment status
+  qSelectEquipmentStatusById: `SELECT id FROM equipment_status WHERE id = $1;`,
+
+  // Query to validate sector
+  qSelectSectorById: `SELECT id FROM sector WHERE id = $1;`,
+
+  // Query to find equipment by ID
+  qSelectEquipmentById: `SELECT e.id, e.name, e.id_equipment_type, et.name AS equipment_type, e.id_equipment_status, es.name AS equipment_status, e.heritage_code, e.id_sector, s.name AS sector_name, e.observation, e.date_register, e.date_change_status, e.id_user_create, e.id_last_user_change FROM equipment e INNER JOIN equipment_type et ON e.id_equipment_type = et.id INNER JOIN equipment_status es ON e.id_equipment_status = es.id LEFT JOIN sector s ON e.id_sector = s.id WHERE e.id = $1;`,
+
+  // Query to find equipment by name
+  qSelectEquipmentByName: `SELECT e.id, e.name, e.id_equipment_type, et.name AS equipment_type, e.id_equipment_status, es.name AS equipment_status, e.heritage_code, e.id_sector, s.name AS sector_name, e.observation, e.date_register, e.date_change_status, e.id_user_create, e.id_last_user_change FROM equipment e INNER JOIN equipment_type et ON e.id_equipment_type = et.id INNER JOIN equipment_status es ON e.id_equipment_status = es.id LEFT JOIN sector s ON e.id_sector = s.id WHERE e.name ILIKE '%' || $1 || '%' ORDER BY e.name ASC;`,
+
+  // Query to check whether a heritage code is already registered
+  qSelectEquipmentByHeritageCode: `SELECT id FROM equipment WHERE heritage_code = $1;`,
+
   //
   //
   // INSERTS
@@ -101,6 +125,9 @@ export const queries = {
 
   // Add permission to role
   qAddRolePermission: `INSERT INTO role_permission (id_role, id_permission) VALUES ($1, $2);`,
+
+  // Register equipment
+  qAddEquipment: `INSERT INTO equipment (name, id_equipment_type, id_equipment_status, heritage_code, id_sector, observation, id_user_create, id_last_user_change) VALUES ($1, $2, $3, $4, $5, $6, $7, $7) RETURNING *;`,
 
   //
   //
@@ -129,6 +156,12 @@ export const queries = {
 
   // Edit an existing role
   qUpdateRole: `UPDATE role SET name = $1 WHERE id = $2 RETURNING id, name;`,
+
+  // Update equipment details
+  qUpdateEquipment: `UPDATE equipment SET name = $1, id_equipment_type = $2, heritage_code = $3, id_sector = $4, observation = $5, id_last_user_change = $6 WHERE id = $7 RETURNING *;`,
+
+  // Update equipment status
+  qUpdateEquipmentStatus: `UPDATE equipment SET id_equipment_status = $1, id_last_user_change = $2 WHERE id = $3 RETURNING *;`,
 
   //
   //
