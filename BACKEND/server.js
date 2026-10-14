@@ -53,6 +53,7 @@ app.use("/employees", require("./routes/api/employees"));
 app.use("/roles", require("./routes/api/roles"));
 app.use("/permissions", require("./routes/api/permissions"));
 app.use("/equipments", require("./routes/api/equipment"));
+app.use("/dashboard", require("./routes/api/dashboard"));
 
 // Handling user data refresh functions
 // app.use("/re", require("./routes/refreshUser"));

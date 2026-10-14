@@ -127,6 +127,24 @@ export const queries = {
   // Query to find "Presente" status
   qSelectPresentStatus: `SELECT id FROM attendance_status WHERE name = 'Presente';`,
 
+  // Query to select the date for the dashboard
+  qDashboardDate: `SELECT COALESCE($1::date, CURRENT_DATE)::text AS date;`,
+
+  // Query to count the amount of active employees
+  qDashboardActiveEmployees: `SELECT COUNT(*)::int AS total_active_employees FROM employee WHERE status_active = TRUE;`,
+
+  // Query to show a summary of attendance
+  qDashboardAttendanceSummary: `SELECT COUNT(*) FILTER (WHERE ast.name = 'Presente')::int AS present, COUNT(*) FILTER (WHERE ast.name = 'Falta injustificada')::int AS absent, COUNT(*) FILTER (WHERE ast.name = 'Atestado')::int AS justified_absences, COUNT(*) FILTER (WHERE a.id IS NULL)::int AS not_registered, COUNT(*) FILTER (WHERE ast.name IN ('Banco de horas', 'Afastado', 'Férias'))::int AS other_statuses FROM employee e LEFT JOIN attendance a ON a.id_employee = e.id AND a.date = COALESCE($1::date, CURRENT_DATE) LEFT JOIN attendance_status ast ON ast.id = a.id_attendance_status WHERE e.status_active = TRUE;`,
+
+  // Query to count equipment
+  qDashboardEquipmentTotal: `SELECT COUNT(*)::int AS total FROM equipment;`,
+
+  // Query to count equipment by status
+  qDashboardEquipmentByStatus: `SELECT es.id AS id_status, es.name AS status, COUNT(e.id)::int AS quantity FROM equipment_status es LEFT JOIN equipment e ON e.id_equipment_status = es.id GROUP BY es.id, es.name ORDER BY es.name;`,
+
+  // Query to count equipment by type
+  qDashboardEquipmentByType: `SELECT et.id AS id_type, et.name AS type, COUNT(e.id)::int AS quantity FROM equipment_type et LEFT JOIN equipment e ON e.id_equipment_type = et.id GROUP BY et.id, et.name ORDER BY et.name;`,
+
   //
   //
   // INSERTS
