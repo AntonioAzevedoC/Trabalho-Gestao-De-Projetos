@@ -9,6 +9,17 @@ const validateEmail = (email) => {
   return regex.reEmail.test(email);
 };
 
+// Function to validate dates
+const validateDate = (v) => {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    return false;
+  }
+
+  const date = new Date(`${v}T00:00:00.000Z`);
+
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === v;
+};
+
 // Function to validate name
 const validateName = (userName) => {
   return regex.reName.test(userName);
@@ -84,6 +95,7 @@ const validatePassword = (passwd) => {
 // Exporting functions
 module.exports = {
   validateEmail,
+  validateDate,
   validateName,
   validateRole,
   trimStringNumber,

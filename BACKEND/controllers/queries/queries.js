@@ -106,6 +106,27 @@ export const queries = {
   // Query to check whether a heritage code is already registered
   qSelectEquipmentByHeritageCode: `SELECT id FROM equipment WHERE heritage_code = $1;`,
 
+  // Query to list attendance records for a specific date
+  qSelectAttendanceByDate: `SELECT a.id, a.id_employee, e.name AS employee_name, a.id_attendance_status, ast.name AS attendance_status, a.date, a.observation, a.date_register, a.date_last_change, a.id_user_create, a.id_last_user_change FROM attendance a INNER JOIN employee e ON a.id_employee = e.id INNER JOIN attendance_status ast ON a.id_attendance_status = ast.id WHERE a.date = $1 ORDER BY e.name ASC;`,
+
+  // Query to find attendance records for a specific employee
+  qSelectAttendanceByEmployee: `SELECT a.id, a.id_employee, e.name AS employee_name, a.id_attendance_status, ast.name AS attendance_status, a.date, a.observation, a.date_register, a.date_last_change, a.id_user_create, a.id_last_user_change FROM attendance a INNER JOIN employee e ON a.id_employee = e.id INNER JOIN attendance_status ast ON a.id_attendance_status = ast.id WHERE a.id_employee = $1 ORDER BY a.date DESC;`,
+
+  // Query to find an employee's attendance on a specific date
+  qSelectAttendanceByEmployeeAndDate: `SELECT a.id, a.id_employee, e.name AS employee_name, a.id_attendance_status, ast.name AS attendance_status, a.date, a.observation, a.date_register, a.date_last_change, a.id_user_create, a.id_last_user_change FROM attendance a INNER JOIN employee e ON a.id_employee = e.id INNER JOIN attendance_status ast ON a.id_attendance_status = ast.id WHERE a.id_employee = $1 AND a.date = $2;`,
+
+  // Query to find attendance by record ID
+  qSelectAttendanceById: `SELECT id, id_employee, id_attendance_status, date, observation, id_user_create, id_last_user_change FROM attendance WHERE id = $1;`,
+
+  // Query to find employee by ID
+  qSelectAttendanceEmployeeById: `SELECT id, name, status_active FROM employee WHERE id = $1;`,
+
+  // Query to find attendance status by ID
+  qSelectAttendanceStatusById: `SELECT id, name FROM attendance_status WHERE id = $1;`,
+
+  // Query to find "Presente" status
+  qSelectPresentStatus: `SELECT id FROM attendance_status WHERE name = 'Presente';`,
+
   //
   //
   // INSERTS
@@ -128,6 +149,12 @@ export const queries = {
 
   // Register equipment
   qAddEquipment: `INSERT INTO equipment (name, id_equipment_type, id_equipment_status, heritage_code, id_sector, observation, id_user_create, id_last_user_change) VALUES ($1, $2, $3, $4, $5, $6, $7, $7) RETURNING *;`,
+
+  // Register employee attendance
+  qAddAttendance: `INSERT INTO attendance (id_employee, id_attendance_status, date, observation, id_user_create, id_last_user_change) VALUES ($1, $2, $3, $4, $5, $5) RETURNING *;`,
+
+  // Mark all active employees as present for a specific date, skipping existing records
+  qMarkAllEmployeesPresent: `INSERT INTO attendance (id_employee, id_attendance_status, date, observation, id_user_create, id_last_user_change) SELECT e.id, ast.id, $1::date, NULL, $2, $2 FROM employee e CROSS JOIN attendance_status ast WHERE e.status_active = TRUE AND ast.name = 'Presente' ON CONFLICT (id_employee, date) DO NOTHING RETURNING id, id_employee, date, id_attendance_status;`,
 
   //
   //
@@ -162,6 +189,9 @@ export const queries = {
 
   // Update equipment status
   qUpdateEquipmentStatus: `UPDATE equipment SET id_equipment_status = $1, id_last_user_change = $2 WHERE id = $3 RETURNING *;`,
+
+  // Update employee attendance
+  qUpdateAttendance: `UPDATE attendance SET id_attendance_status = $1, observation = $2, id_last_user_change = $3 WHERE id = $4 RETURNING *;`,
 
   //
   //
