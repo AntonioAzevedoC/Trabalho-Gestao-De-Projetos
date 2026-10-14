@@ -20,6 +20,13 @@ const validateDate = (v) => {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === v;
 };
 
+// Function to validate timestamp
+const validateTime = (value) => {
+  if (typeof value !== "string") return false;
+
+  return /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(value);
+};
+
 // Function to validate name
 const validateName = (userName) => {
   return regex.reName.test(userName);
@@ -96,6 +103,7 @@ const validatePassword = (passwd) => {
 module.exports = {
   validateEmail,
   validateDate,
+  validateTime,
   validateName,
   validateRole,
   trimStringNumber,

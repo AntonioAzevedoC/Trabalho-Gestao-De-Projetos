@@ -4,7 +4,7 @@
 const db = require("../db");
 
 // Importing queries file
-const { queries: q, queries } = require("./queries/queries");
+const { queries: q } = require("./queries/queries");
 
 // Importing validation helper functions
 const validate = require("../helpers/dataValidation");
@@ -29,12 +29,12 @@ const getDashboard = async (req, res) => {
       equipmentByStatus,
       equipmentByType,
     ] = await Promise.all([
-      db.query(queries.qDashboardDate, [date]),
-      db.query(queries.qDashboardActiveEmployees),
-      db.query(queries.qDashboardAttendanceSummary, [date]),
-      db.query(queries.qDashboardEquipmentTotal),
-      db.query(queries.qDashboardEquipmentByStatus),
-      db.query(queries.qDashboardEquipmentByType),
+      db.query(q.qDashboardDate, [date]),
+      db.query(q.qDashboardActiveEmployees),
+      db.query(q.qDashboardAttendanceSummary, [date]),
+      db.query(q.qDashboardEquipmentTotal),
+      db.query(q.qDashboardEquipmentByStatus),
+      db.query(q.qDashboardEquipmentByType),
     ]);
 
     return res.status(200).json({

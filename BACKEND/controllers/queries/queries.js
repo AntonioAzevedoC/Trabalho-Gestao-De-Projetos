@@ -145,6 +145,19 @@ export const queries = {
   // Query to count equipment by type
   qDashboardEquipmentByType: `SELECT et.id AS id_type, et.name AS type, COUNT(e.id)::int AS quantity FROM equipment_type et LEFT JOIN equipment e ON e.id_equipment_type = et.id GROUP BY et.id, et.name ORDER BY et.name;`,
 
+  // Query to select shifts
+  qSelectShifts: `SELECT id, name, hour_start, hour_end FROM shift ORDER BY hour_start ASC, name ASC;`,
+
+  // Query to select shift by ID
+  qSelectShiftById: `SELECT id, name, hour_start, hour_end FROM shift WHERE id = $1;`,
+
+  // Query to select shift by name
+  qSelectShiftByName: `SELECT id, name FROM shift WHERE LOWER(name) = LOWER($1);`,
+
+  qSelectShiftByNameExceptId: `SELECT id, name FROM shift WHERE LOWER(name) = LOWER($1) AND id <> $2;`,
+
+  qSelectShiftEmployeeUsage: `SELECT COUNT(*)::int AS total FROM employee WHERE id_shift = $1;`,
+
   //
   //
   // INSERTS
@@ -173,6 +186,9 @@ export const queries = {
 
   // Mark all active employees as present for a specific date, skipping existing records
   qMarkAllEmployeesPresent: `INSERT INTO attendance (id_employee, id_attendance_status, date, observation, id_user_create, id_last_user_change) SELECT e.id, ast.id, $1::date, NULL, $2, $2 FROM employee e CROSS JOIN attendance_status ast WHERE e.status_active = TRUE AND ast.name = 'Presente' ON CONFLICT (id_employee, date) DO NOTHING RETURNING id, id_employee, date, id_attendance_status;`,
+
+  // Query to add shift
+  qAddShift: `INSERT INTO shift (name, hour_start, hour_end) VALUES ($1, $2, $3) RETURNING id, name, hour_start, hour_end;`,
 
   //
   //
@@ -211,6 +227,9 @@ export const queries = {
   // Update employee attendance
   qUpdateAttendance: `UPDATE attendance SET id_attendance_status = $1, observation = $2, id_last_user_change = $3 WHERE id = $4 RETURNING *;`,
 
+  // Query to update shift
+  qUpdateShift: `UPDATE shift SET name = $1, hour_start = $2, hour_end = $3 WHERE id = $4 RETURNING id, name, hour_start, hour_end;`,
+
   //
   //
   // DELETE
@@ -235,4 +254,7 @@ export const queries = {
 
   // Remove all permissions from a role
   qDeleteAllRolePermissions: `DELETE FROM role_permission WHERE id_role = $1 RETURNING id_role, id_permission;`,
+
+  // Query to delete shift
+  qDeleteShift: `DELETE FROM shift WHERE id = $1 RETURNING id, name;`,
 };
