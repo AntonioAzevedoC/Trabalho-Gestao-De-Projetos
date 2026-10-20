@@ -17,6 +17,4 @@ router
   .put(usersController.deactivateUser) // Route to deactivate user from database
   .delete(usersController.deleteUser); // Route to delete user from database
 
-router.route("/search/:searchText").get(usersController.searchForUsers); // Route to search for users in the database;
-
 module.exports = router;

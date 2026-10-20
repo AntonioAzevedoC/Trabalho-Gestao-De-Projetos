@@ -11,6 +11,6 @@ router
   .post(attendanceController.addAttendance) // Route to add new attendance
   .put(attendanceController.updateAttendance); // Route to update attendance
 
-router.route("/:id").get(attendanceController.markAllPresent); // Route to get a specific attendance from the database
+router.route("/all/").post(attendanceController.markAllPresent); // Route to get a specific attendance from the database
 
 module.exports = router;

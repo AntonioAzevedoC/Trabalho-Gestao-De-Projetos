@@ -12,14 +12,14 @@ const validate = require("../helpers/dataValidation");
 // Function to list attendance
 // Works with either an employee's ID, or a date, or both
 const getAttendance = async (req, res) => {
-  const { date, employeeId } = req.query;
+  const { date, id_employee } = req.body;
 
   try {
     let result;
 
-    if (employeeId !== undefined && date !== undefined) {
+    if (id_employee !== undefined && date !== undefined) {
       if (
-        !/^[1-9]\d*$/.test(String(employeeId)) ||
+        !/^[1-9]\d*$/.test(String(id_employee)) ||
         !validate.validateDate(date)
       ) {
         return res.status(400).json({
@@ -28,7 +28,7 @@ const getAttendance = async (req, res) => {
       }
 
       result = await db.query(q.qSelectAttendanceByEmployeeAndDate, [
-        Number(employeeId),
+        Number(id_employee),
         date,
       ]);
     } else if (date !== undefined) {
@@ -39,15 +39,15 @@ const getAttendance = async (req, res) => {
       }
 
       result = await db.query(q.qSelectAttendanceByDate, [date]);
-    } else if (employeeId !== undefined) {
-      if (!/^[1-9]\d*$/.test(String(employeeId))) {
+    } else if (id_employee !== undefined) {
+      if (!/^[1-9]\d*$/.test(String(id_employee))) {
         return res.status(400).json({
           message: "ID de funcionário inválido.",
         });
       }
 
       result = await db.query(q.qSelectAttendanceByEmployee, [
-        Number(employeeId),
+        Number(id_employee),
       ]);
     } else {
       return res.status(400).json({
@@ -71,7 +71,7 @@ const getAttendance = async (req, res) => {
 const addAttendance = async (req, res) => {
   const { id_employee, id_attendance_status, date, observation } = req.body;
 
-  const userId = Number(req.id);
+  const userId = Number(18);
 
   // Validate required fields
   if (
@@ -80,7 +80,7 @@ const addAttendance = async (req, res) => {
     !Number.isInteger(Number(id_attendance_status)) ||
     Number(id_attendance_status) <= 0 ||
     !validate.validateDate(date) ||
-    (observation != null &&
+    (observation !== null &&
       (typeof observation !== "string" || observation.length > 255)) ||
     !Number.isInteger(userId) ||
     userId <= 0
@@ -166,7 +166,7 @@ const addAttendance = async (req, res) => {
 const updateAttendance = async (req, res) => {
   const { id, id_attendance_status, observation } = req.body;
 
-  const userId = Number(req.id);
+  const userId = Number(18);
 
   if (
     !Number.isInteger(Number(id)) ||
