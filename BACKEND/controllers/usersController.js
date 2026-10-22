@@ -30,7 +30,7 @@ const getUserByID = async (req, res) => {
   // Finding user
   try {
     // Searching for user
-    const { rows } = await db.query(q.qSelectUserByID, [id]);
+    const { rows } = await db.query(q.qSelectUserByID, [Number(id)]);
     const user = rows[0];
 
     // Send error message if user isn't found

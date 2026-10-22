@@ -166,7 +166,7 @@ const addAttendance = async (req, res) => {
 const updateAttendance = async (req, res) => {
   const { id, id_attendance_status, observation } = req.body;
 
-  const userId = Number(18);
+  const userId = Number(req.id);
 
   if (
     !Number.isInteger(Number(id)) ||

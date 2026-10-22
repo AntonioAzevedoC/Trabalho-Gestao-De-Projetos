@@ -28,7 +28,7 @@ const getAllEquipment = async (req, res) => {
 
 // Function to get equipment by ID
 const getEquipmentByID = async (req, res) => {
-  const { id } = req.params.id;
+  const id = req.params.id;
 
   try {
     const { rows } = await db.query(q.qSelectEquipmentById, [Number(id)]);
@@ -80,7 +80,6 @@ const addEquipment = async (req, res) => {
     heritage_code.length > 20 ||
     (observation !== null && observation.length > 20) ||
     !Number.isInteger(userId) ||
-    userId <= 0 ||
     (id_sector !== null &&
       (!Number.isInteger(Number(id_sector)) || Number(id_sector) <= 0))
   ) {
@@ -178,7 +177,7 @@ const updateEquipment = async (req, res) => {
   let { id, name, id_equipment_type, heritage_code, id_sector, observation } =
     req.body;
 
-  const userId = Number(req.user.id);
+  const userId = Number(req.id);
 
   if (
     !Number.isInteger(Number(id)) ||
