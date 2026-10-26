@@ -13,7 +13,7 @@ const validate = require("../helpers/dataValidation");
 // It works with either a selected date, or the current date as default
 const getDashboard = async (req, res) => {
   try {
-    const date = req.body || null;
+    const { date } = req.body || null;
 
     if (date !== null && !validate.validateDate(date)) {
       return res.status(400).json({
