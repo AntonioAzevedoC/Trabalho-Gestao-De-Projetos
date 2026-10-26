@@ -50,7 +50,7 @@ const addShift = async (req, res) => {
       });
     }
 
-    const result = await db.query(shiftQueries.qInsertShift, [
+    const result = await db.query(q.qAddShift, [
       normalizedName,
       hour_start,
       hour_end,
