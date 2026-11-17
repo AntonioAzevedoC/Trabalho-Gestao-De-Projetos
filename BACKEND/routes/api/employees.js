@@ -16,6 +16,6 @@ router
   .get(employeesController.getEmployeeByID) // Route to get a specific employee from the database
   .delete(employeesController.deleteEmployee); // Route to delete employee from database
 
-router.route("/:id/:id_employee").put(employeesController.deactivateEmployee); // Route to deactivate employee from database
+router.route("/:id/:id_user").put(employeesController.deactivateEmployee); // Route to deactivate employee from database
 
 module.exports = router;
