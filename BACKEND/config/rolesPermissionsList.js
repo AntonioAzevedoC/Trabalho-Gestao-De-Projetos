@@ -9,10 +9,9 @@
 
 // The assigned numbers are random
 const PERMISSIONS_LIST = {
-  USER: 1928,
-  ROLE: 8127,
-  EMPLOYEE: 7654,
-  EQUIPMENT: 1997,
+  USER: "Usuários",
+  EMPLOYEE: "Funcionários",
+  EQUIPMENT: "Equipamentos",
 };
 
 module.exports = PERMISSIONS_LIST;

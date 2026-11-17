@@ -60,6 +60,14 @@ const handleLogin = async (req, res) => {
 
     // If match happens, create JSON Web Tokens
     if (match) {
+      // Fetching the permissions that belong to the user's role
+      const { rows: permissionRows } = await db.query(
+        q.qSelectPermissionsByRoleId,
+        [user.id_role],
+      );
+
+      const permissions = permissionRows.map((p) => p.name);
+
       // Creating JWTs (JSON Web Tokens)
 
       // Creating Access Token
@@ -69,11 +77,11 @@ const handleLogin = async (req, res) => {
             userId: user.id,
             username: user.name,
             role: user.id_role,
+            permissions,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "5m" },
-        // { expiresIn: "20s" }, // FOR TESTING - 30 seconds to expire
       );
 
       // Creating Refresh Token
@@ -109,33 +117,26 @@ const handleLogin = async (req, res) => {
         // Deleting old refresh token, if it exists
         // await db.query(q.qDeleteRefreshTokenByID, [user.id]);
 
-        // // Inserting refreshToken in database
-        // await db.query(q.qAddRefreshToken, [
-        //   user.id,
-        //   hashToken,
-        //   expirationDate,
-        // ]);
+        // Inserting refreshToken in database
+        await db.query(q.qAddRefreshToken, [
+          user.id,
+          hashToken,
+          expirationDate,
+        ]);
 
         // Sending Refresh Token as http only cookie, so that it is not reachable by hackers (This word does sound a bit corny), the age of the token is also set to 1 full day, in milliseconds
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
-          // secure: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax", // better for dev
-          // sameSite: "strict",
-          // maxAge: 24 * 60 * 60 * 1000,
-          // maxAge: 1 * 60 * 1000,
           maxAge: 15 * 60 * 1000,
         });
 
         // Sending Access Token as cookie
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
-          // secure: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax", // better for dev
-          // sameSite: "strict",
-          // maxAge: 20 * 1000,
           maxAge: 5 * 60 * 1000,
         });
 

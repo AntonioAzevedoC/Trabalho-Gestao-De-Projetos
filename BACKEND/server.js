@@ -47,7 +47,7 @@ app.use("/logout", require("./routes/logout"));
 app.use("/password-reset", require("./routes/passwordReset"));
 
 // Calling verify JWT (JSON Web Token) on all routes below this point
-// app.use(verifyJWT);
+app.use(verifyJWT);
 
 // Handling users functions
 app.use("/users", require("./routes/api/users"));

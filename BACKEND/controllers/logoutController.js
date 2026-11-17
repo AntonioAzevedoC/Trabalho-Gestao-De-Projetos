@@ -32,19 +32,15 @@ const handleLogout = async (req, res) => {
     // Clearing refresh token
     res.clearCookie("refreshToken", refreshToken, {
       httpOnly: true,
-      // secure: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax", // better for dev
-      // sameSite: "strict",
     });
 
     // Clearing access tokens
     res.clearCookie("accessToken", refreshToken, {
       httpOnly: true,
-      // secure: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax", // better for dev
-      // sameSite: "strict",
     });
 
     return res.sendStatus(204); // Successful, but no Content

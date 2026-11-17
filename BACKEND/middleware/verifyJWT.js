@@ -14,7 +14,8 @@ const verifyJWT = (req, res, next) => {
       if (err) return res.sendStatus(403); // Invalid Token
       req.userId = decoded.userInfo.userId;
       req.user = decoded.userInfo.username;
-      req.role = decoded.userInfo.role; // ADD PERMISSIONS ID HERE
+      req.role = decoded.userInfo.role;
+      req.permissions = decoded.userInfo.permissions || []; // ADD PERMISSIONS ID HERE
       next();
     });
   } catch {

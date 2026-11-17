@@ -158,6 +158,9 @@ export const queries = {
 
   qSelectShiftEmployeeUsage: `SELECT COUNT(*)::int AS total FROM employee WHERE id_shift = $1;`,
 
+  // Query to selct user permissions
+  qSelectPermissionsByRoleId: `SELECT p.name FROM role_permission rp JOIN permission p ON p.id = rp.id_permission WHERE rp.id_role = $1`,
+
   //
   //
   // INSERTS

@@ -1,21 +1,17 @@
-// Middleware file to verify user roles
+// Middleware file to verify user permissions
 
-// When calling the function, the allowed roles parameter is filled with an array containing a list of the codes that are allowed to use that specific function/CRUD call
-const verifyRoles = (allowedRoles) => {
+// When calling the function, pass the name of the permission required to use that route, e.g. verifyRoles("create_employee")
+const verifyRoles = (requiredPermission) => {
   return (req, res, next) => {
-    if (!req?.role) return res.sendStatus(401); // Unauthorized
+    if (!Array.isArray(req?.permissions)) return res.sendStatus(401); // Unauthorized
 
-    const allowedRolesArray = allowedRoles;
+    // Checking if the user's permissions array contains the required permission
+    const result = req.permissions.includes(requiredPermission); // Boolean
 
-    // Checking if the logged in user role is in the list of roles that can use the specific funcionality/CRUD call
-    const result = allowedRolesArray.includes(req.role); // Boolean
+    // If the user doesn't have the permission, block the request
+    if (!result) return res.sendStatus(403); // Forbidden
 
-    // If the role can't access the functionality, return unauthorized
-    if (!result) return res.sendStatus(401); // Unauthorized
-
-    // If everything is cool, then call the functionality
     next();
   };
 };
-
 module.exports = verifyRoles;

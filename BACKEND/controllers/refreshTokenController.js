@@ -33,6 +33,13 @@ const handleRefreshToken = async (req, res) => {
   // If user isn't found, return error
   if (!foundUser || user.length === 0) return res.sendStatus(403); // Forbidden;
 
+  // Fetching the current permissions of the user's role
+  const { rows: permissionRows } = await db.query(
+    q.qSelectPermissionsByRoleId,
+    [foundUser.id_role],
+  );
+  const permissions = permissionRows.map((p) => p.name);
+
   // Evaluating if found refresh token is still valid
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
     // Return error, in case data of an error, or if the data doesn't match
@@ -45,21 +52,18 @@ const handleRefreshToken = async (req, res) => {
           userId: foundUser.id,
           username: foundUser.name,
           role: foundUser.id_role,
+          permissions,
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      // { expiresIn: "20s" }, // FOR TESTING - 20 seconds to expire
       { expiresIn: "5m" },
     );
 
     // Sending Access Token as cookie
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      // secure: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax", // better for dev
-      // sameSite: "strict",
-      // maxAge: 20 * 1000,
       maxAge: 5 * 60 * 1000,
     });
 
