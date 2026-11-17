@@ -43,6 +43,8 @@ app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 // Handling logout
 app.use("/logout", require("./routes/logout"));
+// Handling password reset
+app.use("/password-reset", require("./routes/passwordReset"));
 
 // Calling verify JWT (JSON Web Token) on all routes below this point
 // app.use(verifyJWT);

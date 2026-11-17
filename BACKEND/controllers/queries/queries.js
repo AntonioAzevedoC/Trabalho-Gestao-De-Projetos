@@ -230,6 +230,9 @@ export const queries = {
   // Query to update shift
   qUpdateShift: `UPDATE shift SET name = $1, hour_start = $2, hour_end = $3 WHERE id = $4 RETURNING id, name, hour_start, hour_end;`,
 
+  // Query to reset user password
+  qUpdateUserPassword: `UPDATE "user" SET password_hash = $1 WHERE id = $2 RETURNING id;`,
+
   //
   //
   // DELETE
