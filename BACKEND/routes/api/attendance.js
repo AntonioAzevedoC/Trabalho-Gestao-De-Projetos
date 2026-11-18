@@ -7,10 +7,24 @@ const PERMISSIONS_LIST = require("../../config/rolesPermissionsList");
 // Verifying the access token before using the command
 router
   .route("/")
-  .get(attendanceController.getAttendance) // Route to get all attendances from database
-  .post(attendanceController.addAttendance) // Route to add new attendance
-  .put(attendanceController.updateAttendance); // Route to update attendance
+  .get(
+    verifyRoles([PERMISSIONS_LIST.ATTENDANCE]),
+    attendanceController.getAttendance,
+  ) // Route to get all attendances from database
+  .post(
+    verifyRoles([PERMISSIONS_LIST.ATTENDANCE]),
+    attendanceController.addAttendance,
+  ) // Route to add new attendance
+  .put(
+    verifyRoles([PERMISSIONS_LIST.ATTENDANCE]),
+    attendanceController.updateAttendance,
+  ); // Route to update attendance
 
-router.route("/all/").post(attendanceController.markAllPresent); // Route to get a specific attendance from the database
+router
+  .route("/all/")
+  .post(
+    verifyRoles([PERMISSIONS_LIST.ATTENDANCE]),
+    attendanceController.markAllPresent,
+  ); // Route to get a specific attendance from the database
 
 module.exports = router;

@@ -5,13 +5,29 @@ const verifyRoles = require("../../middleware/verifyRoles");
 const PERMISSIONS_LIST = require("../../config/rolesPermissionsList");
 
 // Verifying the access token before using the command
-router.route("/").get(permissionsController.getAllPermissions); // Route to get all permissions
+router
+  .route("/")
+  .get(
+    verifyRoles([PERMISSIONS_LIST.ROLES]),
+    permissionsController.getAllPermissions,
+  ); // Route to get all permissions
 
 router
   .route("/:id_role/:id_permission")
-  .put(permissionsController.addPermissionToRole) // Route to add a permission to a role
-  .delete(permissionsController.deletePermissionFromRole); // Route to remove permission from role
+  .put(
+    verifyRoles([PERMISSIONS_LIST.ROLES]),
+    permissionsController.addPermissionToRole,
+  ) // Route to add a permission to a role
+  .delete(
+    verifyRoles([PERMISSIONS_LIST.ROLES]),
+    permissionsController.deletePermissionFromRole,
+  ); // Route to remove permission from role
 
-router.route("/:id_role").get(permissionsController.getPermissionsByRoleID); // Route to get all permissions related to a role
+router
+  .route("/:id_role")
+  .get(
+    verifyRoles([PERMISSIONS_LIST.ROLES]),
+    permissionsController.getPermissionsByRoleID,
+  ); // Route to get all permissions related to a role
 
 module.exports = router;

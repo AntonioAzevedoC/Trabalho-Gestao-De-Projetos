@@ -7,10 +7,12 @@ const PERMISSIONS_LIST = require("../../config/rolesPermissionsList");
 // Verifying the access token before using the command
 router
   .route("/")
-  .get(shiftsController.getAllShifts) // Route to get all shifts from the database
-  .post(shiftsController.addShift) // Route to add new shift
-  .put(shiftsController.updateShift); // Route to update shift
+  .get(verifyRoles([PERMISSIONS_LIST.SHIFTS]), shiftsController.getAllShifts) // Route to get all shifts from the database
+  .post(verifyRoles([PERMISSIONS_LIST.SHIFTS]), shiftsController.addShift) // Route to add new shift
+  .put(verifyRoles([PERMISSIONS_LIST.SHIFTS]), shiftsController.updateShift); // Route to update shift
 
-router.route("/:id").delete(shiftsController.deleteShift); // Route to delete shift from database
+router
+  .route("/:id")
+  .delete(verifyRoles([PERMISSIONS_LIST.SHIFTS]), shiftsController.deleteShift); // Route to delete shift from database
 
 module.exports = router;

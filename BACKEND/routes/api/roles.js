@@ -7,13 +7,13 @@ const PERMISSIONS_LIST = require("../../config/rolesPermissionsList");
 // Verifying the access token before using the command
 router
   .route("/")
-  .post(rolesController.addRole) // Route to add a new role
-  .get(rolesController.getAllRoles) // Route to get all roles from the database
-  .put(rolesController.updateRole); // Route to update role from database
+  .post(verifyRoles([PERMISSIONS_LIST.ROLES]), rolesController.addRole) // Route to add a new role
+  .get(verifyRoles([PERMISSIONS_LIST.ROLES]), rolesController.getAllRoles) // Route to get all roles from the database
+  .put(verifyRoles([PERMISSIONS_LIST.ROLES]), rolesController.updateRole); // Route to update role from database
 
 router
   .route("/:id")
-  .get(rolesController.getRoleByID) // Route to get a specific role from the database
-  .delete(rolesController.deleteRole); // Route to delete role from database
+  .get(verifyRoles([PERMISSIONS_LIST.ROLES]), rolesController.getRoleByID) // Route to get a specific role from the database
+  .delete(verifyRoles([PERMISSIONS_LIST.ROLES]), rolesController.deleteRole); // Route to delete role from database
 
 module.exports = router;

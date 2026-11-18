@@ -12,6 +12,10 @@ const PERMISSIONS_LIST = {
   USER: "Usuários",
   EMPLOYEE: "Funcionários",
   EQUIPMENT: "Equipamentos",
+  SHIFTS: "Turnos",
+  ROLES: "Papéis",
+  DASHBOARD: "Relatórios",
+  ATTENDANCE: "Presença",
 };
 
 module.exports = PERMISSIONS_LIST;
